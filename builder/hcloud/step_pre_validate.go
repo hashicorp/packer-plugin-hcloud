@@ -52,6 +52,7 @@ func (s *stepPreValidate) Run(ctx context.Context, state multistep.StateBag) mul
 	}
 
 	// no snapshot with the same name found
+
 	return multistep.ActionContinue
 }
 

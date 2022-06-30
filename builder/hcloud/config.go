@@ -34,13 +34,19 @@ type Config struct {
 	Image       string       `mapstructure:"image"`
 	ImageFilter *imageFilter `mapstructure:"image_filter"`
 
-	SnapshotName   string            `mapstructure:"snapshot_name"`
-	SnapshotLabels map[string]string `mapstructure:"snapshot_labels"`
-	UserData       string            `mapstructure:"user_data"`
-	UserDataFile   string            `mapstructure:"user_data_file"`
-	SSHKeys        []string          `mapstructure:"ssh_keys"`
-
-	RescueMode string `mapstructure:"rescue"`
+	SnapshotName         string            `mapstructure:"snapshot_name"`
+	SnapshotLabels       map[string]string `mapstructure:"snapshot_labels"`
+	UserData             string            `mapstructure:"user_data"`
+	UserDataFile         string            `mapstructure:"user_data_file"`
+	SSHKeys              []string          `mapstructure:"ssh_keys"`
+	Network              string            `mapstructure:"network"`
+	IP                   string            `mapstructure:"ip_address"`
+	AliasIPs             []string          `mapstructure:"alias_ips"`
+	ConnectWithPrivateIP bool              `mapstructure:"connect_with_private_ip"`
+	Subnet               string            `mapstructure:"subnet"`
+	MaxSnapshots         int               `mapstructure:"max_snapshots"`
+	SkipImageCreation    bool              `mapstructure:"skip_image_creation"`
+	RescueMode           string            `mapstructure:"rescue"`
 
 	ctx interpolate.Context
 }
@@ -136,6 +142,27 @@ func (c *Config) Prepare(raws ...interface{}) ([]string, error) {
 		if _, err := os.Stat(c.UserDataFile); err != nil {
 			errs = packersdk.MultiErrorAppend(
 				errs, fmt.Errorf("user_data_file not found: %s", c.UserDataFile))
+		}
+	}
+
+	if c.Comm.SSHPrivateKeyFile != "" {
+		if c.Comm.SSHKeyPairName == "" {
+			errs = packersdk.MultiErrorAppend(
+				errs, errors.New("you have to set ssh_keypair_name if you intend to use ssh_private_key_file"))
+		}
+	}
+
+	if c.IP != "" {
+		if c.Network == "" {
+			errs = packersdk.MultiErrorAppend(
+				errs, errors.New("you have to set a network if you specify a ip_address"))
+		}
+	}
+
+	if c.Subnet != "" {
+		if c.Network == "" {
+			errs = packersdk.MultiErrorAppend(
+				errs, errors.New("you have to set a network if you specify a subnet"))
 		}
 	}
 

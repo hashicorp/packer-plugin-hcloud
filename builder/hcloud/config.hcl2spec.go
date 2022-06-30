@@ -80,6 +80,13 @@ type FlatConfig struct {
 	UserData                  *string           `mapstructure:"user_data" cty:"user_data" hcl:"user_data"`
 	UserDataFile              *string           `mapstructure:"user_data_file" cty:"user_data_file" hcl:"user_data_file"`
 	SSHKeys                   []string          `mapstructure:"ssh_keys" cty:"ssh_keys" hcl:"ssh_keys"`
+	Network                   *string           `mapstructure:"network" cty:"network" hcl:"network"`
+	IP                        *string           `mapstructure:"ip_address" cty:"ip_address" hcl:"ip_address"`
+	AliasIPs                  []string          `mapstructure:"alias_ips" cty:"alias_ips" hcl:"alias_ips"`
+	ConnectWithPrivateIP      *bool             `mapstructure:"connect_with_private_ip" cty:"connect_with_private_ip" hcl:"connect_with_private_ip"`
+	Subnet                    *string           `mapstructure:"subnet" cty:"subnet" hcl:"subnet"`
+	MaxSnapshots              *int              `mapstructure:"max_snapshots" cty:"max_snapshots" hcl:"max_snapshots"`
+	SkipImageCreation         *bool             `mapstructure:"skip_image_creation" cty:"skip_image_creation" hcl:"skip_image_creation"`
 	RescueMode                *string           `mapstructure:"rescue" cty:"rescue" hcl:"rescue"`
 }
 
@@ -165,6 +172,13 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"user_data":                    &hcldec.AttrSpec{Name: "user_data", Type: cty.String, Required: false},
 		"user_data_file":               &hcldec.AttrSpec{Name: "user_data_file", Type: cty.String, Required: false},
 		"ssh_keys":                     &hcldec.AttrSpec{Name: "ssh_keys", Type: cty.List(cty.String), Required: false},
+		"network":                      &hcldec.AttrSpec{Name: "network", Type: cty.String, Required: false},
+		"ip_address":                   &hcldec.AttrSpec{Name: "ip_address", Type: cty.String, Required: false},
+		"alias_ips":                    &hcldec.AttrSpec{Name: "alias_ips", Type: cty.List(cty.String), Required: false},
+		"connect_with_private_ip":      &hcldec.AttrSpec{Name: "connect_with_private_ip", Type: cty.Bool, Required: false},
+		"subnet":                       &hcldec.AttrSpec{Name: "subnet", Type: cty.String, Required: false},
+		"max_snapshots":                &hcldec.AttrSpec{Name: "max_snapshots", Type: cty.Number, Required: false},
+		"skip_image_creation":          &hcldec.AttrSpec{Name: "skip_image_creation", Type: cty.Bool, Required: false},
 		"rescue":                       &hcldec.AttrSpec{Name: "rescue", Type: cty.String, Required: false},
 	}
 	return s
